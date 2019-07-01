@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>材质</title>
+    <script type="text/javascript" src="./js/three.js"></script>
+</head>
+
+<body>
+    <canvas id="mainCanvas" width="400px" height="300px"></canvas>
+    <script type="text/javascript">
+        window.onload = init;
+        function init() {
+            // 渲染器
+            var renderer = new THREE.WebGLRenderer( {
+                canvas: document.querySelector( '#mainCanvas' )
+            } );
+            // 场景
+            var scene = new THREE.Scene();
+            // 照相机
+            renderer.setClearColor( 0x000011 );
+            var camera = new THREE.PerspectiveCamera( 45, 400 / 300, 1, 10 );
+            camera.position.set( 3, 3, 5 );
+            camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+            scene.add( camera );
+
+            /**
+            visible：是否可见，默认为true
+            side：渲染面片正面或是反面，默认为正面THREE.FrontSide，可设置为反面THREE.BackSide，或双面THREE.DoubleSide
+            wireframe：是否渲染线而非面，默认为false
+            color：十六进制RGB颜色，如红色表示为0xff0000
+            map：使用纹理贴图
+            opacity：透明度
+            */
+            var basicMaterial = new THREE.MeshBasicMaterial( {
+                color: 0xff0000
+            } );
+
+            // Lambert材质 :只考虑漫反射而不考虑镜面反射的效果，
+            // 因而对于金属、镜子等需要镜面反射效果的物体就不适应，对于其他大部分物体的漫反射效果都是适用的
+            // diffuse = Kd * Id * cos(theta)
+            var lambertMaterial = new THREE.MeshLambertMaterial( {
+                color: 0xffff00,//设置材质颜色的属性
+                emissive: 0xff0000,//材质的自发光颜色,表现光源的颜色,
+                ambient: 1//表示对环境光的反射能力，只有当设置了AmbientLight后，该值才是有效的
+            } )
+
+            // Phong材质
+            // Phong模型考虑了镜面反射的效果，因此对于金属、镜面的表现尤为适合。
+            // Ispecular = Ks * Is * (cos(alpha)) ^ n
+            var phongMaterial = new THREE.MeshPhongMaterial( {
+                color: 0xffff00,
+                specular: 0xff0000,//值指定镜面反射系数,
+                shininess: 1000//控制光照模型中的n值，当shininess值越大时，高光的光斑越小，默认值为30。我们将其设置为1000时
+            } );
+
+            // 法向材质可以将材质的颜色设置为其法向量的方向
+            var normalMaterial = new THREE.MeshNormalMaterial()
+            var cube = new THREE.Mesh( new THREE.CubeGeometry( 2, 2, 2 ), normalMaterial );
+            scene.add( cube );
+            // render
+            renderer.render( scene, camera );
+
+        }
+    </script>
+</body>
+
+</html>

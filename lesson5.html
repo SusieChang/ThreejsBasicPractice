@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>文字形状</title>
+    <script type="text/javascript" src="./js/three.js"></script>
+</head>
+
+<body>
+    <canvas id="mainCanvas" width="400px" height="300px"></canvas>
+    <script type="text/javascript">
+        window.onload = init;
+        function init() {
+            // 渲染器
+            var renderer = new THREE.WebGLRenderer( {
+                canvas: document.querySelector( '#mainCanvas' )
+            } );
+            // 场景
+            var scene = new THREE.Scene();
+            // 照相机
+            renderer.setClearColor( 0x000011 );
+            var camera = new THREE.PerspectiveCamera( 45, 400 / 300, 1, 10 );
+            camera.position.set( 1, 0, 5 );
+            scene.add( camera );
+            // 加载字体
+            var loader = new THREE.FontLoader();
+            loader.load( './three.js/examples/fonts/helvetiker_regular.typeface.json', function ( font ) {
+                var mesh = new THREE.Mesh( new THREE.TextGeometry( 'Susie', { font, size: 1, height: 1 } ),
+                    new THREE.MeshBasicMaterial( {
+                        color: 0xff0000,
+                        wireframe: true // 非实心点
+                    } ) );
+                scene.add( mesh );
+
+                // render
+                renderer.render( scene, camera );
+            } );
+        }
+    </script>
+</body>
+
+</html>

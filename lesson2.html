@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>正交投影</title>
+    <script type="text/javascript" src="./js/three.js"></script>
+</head>
+
+<body>
+    <canvas id="mainCanvas" width="400px" height="300px"></canvas>
+    <script type="text/javascript">
+        window.onload = init;
+        function init() {
+            // 渲染器
+            var renderer = new THREE.WebGLRenderer( {
+                canvas: document.querySelector( '#mainCanvas' )
+            } );
+            renderer.setClearColor( 0x000011 );
+            // 场景
+            var scene = new THREE.Scene();
+            // 照相机
+            // 为了维持比例，正交投影保证(right - left) 和 (top - bottom) 的比例和canvas相同
+            var camera = new THREE.OrthographicCamera( -2, 2, 1.5, -1.5, 1, 10 );
+            camera.position.set(4, -3, 5);
+            // 由于摄像机在y负轴，需要看向原点才看得到物体
+            camera.lookAt(new THREE.Vector3(0, 0, 0));
+            scene.add( camera );
+            // 正方体
+            var cube = new THREE.Mesh( new THREE.CubeGeometry( 1, 1, 1 ),
+                new THREE.MeshBasicMaterial( {
+                    color: 0xff0000,
+                    wireframe: true // 非实心点
+                } )
+            );
+            scene.add( cube );
+            // 添加物体
+            scene.add( cube );
+            // 渲染
+            renderer.render( scene, camera );
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>动画</title>
+    <script type="text/javascript" src="./js/three.js"></script>
+    <script type="text/javascript" src="./js/stats.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="mainCanvas" width="400px" height="300px"></canvas>
+    <script type="text/javascript">
+        window.onload = init;
+        var requestAnimationFrame = window.requestAnimationFrame
+            || window.mozRequestAnimationFrame
+            || window.webkitRequestAnimationFrame
+            || window.msRequestAnimationFrame;
+        window.requestAnimationFrame = requestAnimationFrame;
+
+        var intervalTimer = function ( draw, duration = 20 ) {
+            return {
+                start: function () {
+                    id = setInterval( draw, duration );
+                },
+                stop: function () {
+                    if ( id !== null ) {
+                        clearInterval( id );
+                        id = null;
+                    }
+                }
+            }
+
+        }
+
+        var frameTimer = function ( draw, duration = 20 ) {
+            return {
+                start: function () {
+                    id = requestAnimationFrame( draw );
+                },
+                stop: function () {
+                    if ( id !== null ) {
+                        cancelAnimationFrame( id );
+                        id = null;
+                    }
+                }
+            }
+        }
+        function init() {
+            // 监听动画效果
+            stat = new Stats();
+            stat.domElement.style.position = 'absolute';
+            stat.domElement.style.left = '400px';
+            stat.domElement.style.top = '0px';
+            document.body.appendChild( stat.domElement );
+            // 渲染器
+            var renderer = new THREE.WebGLRenderer( {
+                canvas: document.querySelector( '#mainCanvas' )
+            } );
+            renderer.setClearColor( 0x000011 );
+            // 场景
+            var scene = new THREE.Scene();
+            // 照相机
+            var camera = new THREE.PerspectiveCamera( 45, 4 / 3, 1, 1000 );
+            camera.position.set( 0, 2, 4 );
+            camera.lookAt( new THREE.Vector3( 0, 0, 0 ) );
+            scene.add( camera );
+
+            function draw( mesh ) {
+                mesh.rotation.y = ( mesh.rotation.y + 0.01 ) % ( Math.PI * 2 );
+                renderer.render( scene, camera );
+            }
+            // 长方体
+            var cube = new THREE.Mesh( new THREE.CubeGeometry( 1, 1, 1 ), new THREE.MeshBasicMaterial( {
+                color: 0xff0000
+            } ) );
+
+            function draw( mesh ) {
+                stat.begin();
+                cube.rotation.y = ( cube.rotation.y + 0.01 ) % ( Math.PI * 2 );
+                renderer.render( scene, camera );
+                stat.end();
+                id = requestAnimationFrame( draw ); // requset
+            }
+            // 修改属性
+            // mesh.position.z = 1;
+            // mesh.position.set(1.5, -0.5, 0);
+            // mesh.position = new THREE.Vector3(1.5, -0.5, 0);
+
+            // 添加物体
+            scene.add( cube );
+            frameTimer( draw ).start();
+            // 渲染
+            renderer.render( scene, camera );
+        }
+    </script>
+</body>
+
+</html>
